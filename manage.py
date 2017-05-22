@@ -1,8 +1,8 @@
 from flask_script import Manager, Server
 from setuptools import find_packages
 
-from Koromon.app import create_app
-from Koromon.exts import db
+from koromon.app import create_app
+from koromon.exts import db
 
 application = create_app('koromon')
 manager = Manager(application)

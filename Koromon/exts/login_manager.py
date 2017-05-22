@@ -1,6 +1,6 @@
 from flask_login import LoginManager, current_user
 
-from Koromon.account.models import User
+from koromon.account.models import User
 
 
 login_manager = LoginManager()

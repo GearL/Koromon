@@ -2,7 +2,7 @@
 
 from werkzeug.contrib.fixers import ProxyFix
 
-from Koromon.app import create_app
+from koromon.app import create_app
 
 
 application = create_app('koromon')

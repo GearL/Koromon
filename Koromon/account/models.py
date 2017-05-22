@@ -7,8 +7,8 @@ from uuid import uuid4
 from flask_rbac import RoleMixin, UserMixin
 from flask_sqlalchemy import BaseQuery
 
-from Koromon.exts import db
-from Koromon.utils.json import fail, success
+from koromon.exts import db
+from koromon.utils.json import fail, success
 
 
 class ModelMixin(object):

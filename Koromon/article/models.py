@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from Koromon.account.models import ModelMixin
-from Koromon.exts import db
+from koromon.account.models import ModelMixin
+from koromon.exts import db
 
 
 class Category(ModelMixin, db.Model):

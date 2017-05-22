@@ -1,6 +1,6 @@
 from flask import Blueprint
 
-from Koromon.exts import rbac
+from koromon.exts import rbac
 
 bp = Blueprint('article', __name__, url_prefix='/article')
 

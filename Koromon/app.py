@@ -5,10 +5,10 @@ from __future__ import absolute_import
 from envcfg.raw import koromon
 from flask import Flask
 
-from Koromon.account.views import bp as account_bp
-from Koromon.article.views import bp as article_bp
-from Koromon.exts import setup_database, setup_login_manager
-from Koromon.exts import setup_rbac
+from koromon.account.views import bp as account_bp
+from koromon.article.views import bp as article_bp
+from koromon.exts import setup_database, setup_login_manager
+from koromon.exts import setup_rbac
 
 
 def create_app(name=None, config=None):

@@ -1,7 +1,7 @@
 from flask_login import current_user
 from flask_rbac import RBAC
 
-from Koromon.account.models import User, Role
+from koromon.account.models import User, Role
 
 rbac = RBAC()
 
