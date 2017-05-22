@@ -20,7 +20,7 @@ from wtforms import validators
 
 class SignInForm(FlaskForm):
     login_name = StringField(
-        label=u'登陆名',
+        label=u'登录名',
         description=u'4～16个字符',
         validators=[
             validators.InputRequired(),
@@ -40,7 +40,7 @@ class SignInForm(FlaskForm):
 
 class SignUpForm(FlaskForm):
     login_name = StringField(
-        label=u'登陆名',
+        label=u'登录名',
         validators=[
             validators.length(min=4, max=16)
         ]
