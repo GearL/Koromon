@@ -1,4 +1,4 @@
-from flask_login import LoginManager, current_user
+from flask_login import LoginManager
 
 from koromon.account.models import User
 

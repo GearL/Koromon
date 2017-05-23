@@ -14,10 +14,10 @@ class Category(Base):
     deleted = db.Column(db.BOOLEAN, default=False)
 
     def __str__(self):
-        return "%s" % self.name
+        return '%s' % self.name
 
     def __repr__(self):
-        return "<Category %s>" % self.name
+        return '<Category %s>' % self.name
 
     def delete(self, commit=True):
         for article in self.articles:
@@ -34,7 +34,10 @@ class Category(Base):
 
     @classmethod
     def get_category_by_url_string(cls, url_string):
-        category = cls.query.filter_by(url_string=url_string, deleted=False).first()
+        category = cls.query.filter_by(
+            url_string=url_string,
+            deleted=False
+        ).first()
         return category
 
 
@@ -51,10 +54,10 @@ class Article(Base):
     deleted = db.Column(db.BOOLEAN, default=False)
 
     def __str__(self):
-        return "%s" % self.name
+        return '%s' % self.name
 
     def __repr__(self):
-        return "<Article %s>" % self.name
+        return '<Article %s>' % self.name
 
     def delete(self, commit=True):
         self.deleted = True
@@ -83,5 +86,3 @@ class Article(Base):
         for art in articles:
             article_json[art.name] = art.jsonify()
         return article_json
-
-

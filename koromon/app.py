@@ -8,9 +8,9 @@ from flask import render_template
 
 from koromon.account.views import bp as account_bp
 from koromon.article.views import bp as article_bp
-from koromon.exts import db
-from koromon.exts import setup_login_manager
-from koromon.exts import setup_rbac
+from koromon.exts.database import db
+from koromon.exts.login_manager import setup_login_manager
+from koromon.exts.rbac import setup_rbac
 
 
 def create_app(name=None, config=None):
@@ -34,13 +34,13 @@ def create_app(name=None, config=None):
 
 def setup_error_pages(app):
     @app.errorhandler(403)
-    def page_not_found(error):
+    def page_not_found403(error):
         return render_template('errors/403.html'), 403
 
     @app.errorhandler(404)
-    def page_not_found(error):
+    def page_not_found404(error):
         return render_template('errors/404.html'), 404
 
     @app.errorhandler(405)
-    def method_not_allow(error):
+    def method_not_allow405(error):
         return render_template('errors/405.html'), 405

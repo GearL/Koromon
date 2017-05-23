@@ -1,4 +1,4 @@
-from flask_script import Manager, Server
+from flask_script import Manager
 from setuptools import find_packages
 
 from koromon.app import create_app
@@ -34,6 +34,6 @@ def dropdb():
         db.drop_all()
     print 'Database Dropped'
 
+
 if __name__ == '__main__':
     manager.run()
-

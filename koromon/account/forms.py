@@ -5,12 +5,12 @@ from wtforms import validators
 
 '''
     那个错误返回信息可以自己定制
-    validators.xx(xx, message="something")
+    validators.xx(xx, message='something')
     这样如果不符合要求的话就会返回message的内容
     eg:passwd = PasswordField(
         label=u'密码',
         validators=[
-            validators.length(min=6, max=16, message="长度要求在6～16个字符"）
+            validators.length(min=6, max=16, message='长度要求在6～16个字符'）
         ]
     )
     如果我们输入字符长度不在6～16区间内的，就会返回 长度要求在6～16个字
@@ -87,7 +87,7 @@ class ChangePasswordForm(FlaskForm):
         validators=[
             validators.DataRequired(),
             validators.length(min=6, max=16),
-            validators.equal_to('newpasswd', message=U"新密码与确认密码不匹配")
+            validators.equal_to('newpasswd', message=u'新密码与确认密码不匹配')
         ]
     )
 
@@ -112,7 +112,7 @@ class ReSetPasswordForm(FlaskForm):
         validators=[
             validators.DataRequired(),
             validators.length(min=6, max=16),
-            validators.equal_to('newpasswd', message=U"新密码与确认密码不匹配")
+            validators.equal_to('newpasswd', message=u'新密码与确认密码不匹配')
         ]
     )
 

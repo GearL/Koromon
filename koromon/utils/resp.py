@@ -15,3 +15,7 @@ def fail(message='', result={}):
         message=message,
         result=result
     )
+
+
+def is_ajax(req):
+    return req.headers.get('X-Requested-With') is not None

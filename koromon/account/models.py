@@ -9,7 +9,7 @@ from flask_sqlalchemy import BaseQuery
 from sqlalchemy.exc import IntegrityError
 
 from koromon.exts import db
-from koromon.utils import fail, success
+from koromon.utils.resp import fail, success
 
 
 class Base(db.Model):
@@ -18,7 +18,7 @@ class Base(db.Model):
     @classmethod
     def paginate(cls, page, per_page=20, error_out=True, order_by=None,
                  filters=[], with_deleted=False):
-        """A proxy method to return `per_page` items from page `page`.
+        """"A proxy method to return `per_page` items from page `page`.
         If there is `state` attribute in class and `with_deleted` is `False`
         it will filter out which was `state != 'deleted'`.
         If items were not found it will abort with 404.
@@ -158,7 +158,7 @@ class User(Base, UserMixin):
                         'Deleted', 'Unactivated')
 
     id = db.Column(db.Integer, primary_key=True)
-    loginname = db.Column(db.String(30), nullable=False)
+    login_name = db.Column(db.String(30), nullable=False)
     hashed_password = db.Column(db.String(64))
     nickname = db.Column(db.String(16), unique=True)
     email = db.Column(db.String(50), nullable=True)
@@ -172,9 +172,9 @@ class User(Base, UserMixin):
     def __init__(self, **kwargs):
         self.salt = uuid4().hex
 
-        if 'loginname' in kwargs:
-            loginname = kwargs.pop('loginname')
-            self.loginname = loginname.lower()
+        if 'login_name' in kwargs:
+            login_name = kwargs.pop('login_name')
+            self.login_name = login_name.lower()
 
         if 'passwd' in kwargs:
             raw_passwd = kwargs.pop('passwd')
@@ -190,7 +190,7 @@ class User(Base, UserMixin):
         return self.loginname
 
     def __repr__(self):
-        return "<User: %s>" % self.loginname
+        return '<User: %s>' % self.loginname
 
     def change_password(self, raw_passwd):
         self.salt = uuid4().hex
@@ -216,10 +216,10 @@ class User(Base, UserMixin):
         return self.id
 
     def get_role(self):
-        if self.roles[0].name == u"superuser":
-            return u"超级管理员"
-        elif self.roles[0].name == u"manager":
-            return u"管理员"
+        if self.roles[0].name == u'superuser':
+            return u'超级管理员'
+        elif self.roles[0].name == u'manager':
+            return u'管理员'
 
     def jsonify(self):
         return {
@@ -245,7 +245,7 @@ class User(Base, UserMixin):
 
         if not self.email:
             self.email = 'None'
-        url_pattern = "http://www.gravatar.com/avatar/%s?%s"
+        url_pattern = 'http://www.gravatar.com/avatar/%s?%s'
         gravatar_url = url_pattern % (md5(self.email.lower()).hexdigest(),
                                       urllib.urlencode({'s': str(size)}))
         return gravatar_url
@@ -256,11 +256,11 @@ class User(Base, UserMixin):
     @classmethod
     def check_login_name(cls, login_name):
         if cls.query.filter_by(loginname=login_name).first():
-            return fail(message="用户已存在")
-        return success(message='用户名可用')
+            return fail(message=u'用户已存在')
+        return success(message=u'用户名可用')
 
     @staticmethod
     def _hash_password(salt, password):
         hashed = sha256()
-        hashed.update("<%s|%s>" % (salt, password))
+        hashed.update('<%s|%s>' % (salt, password))
         return hashed.hexdigest()
