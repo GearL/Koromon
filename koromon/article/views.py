@@ -20,7 +20,7 @@ def article_list(category):
     abort(404)
 
 
-@bp.route('/<string:category>/<article_id>/', methods=['GET'])
+@bp.route('/<string:category>/<int:article_id>/', methods=['GET'])
 @rbac.allow(['anonymous'], methods=['GET'])
 def article(category, article_id):
     category = Category.get_category_by_url_string(category)

@@ -4,13 +4,19 @@ from __future__ import absolute_import
 
 from envcfg.raw import koromon
 from flask import Flask
+from flask import redirect
 from flask import render_template
+from flask import request
+from flask import url_for
 
+from koromon.admin.views.main import bp as admin_bp
 from koromon.account.views import bp as account_bp
 from koromon.article.views import bp as article_bp
+from koromon.pages.views import views as pages_bp
 from koromon.exts.database import db
 from koromon.exts.login_manager import setup_login_manager
 from koromon.exts.rbac import setup_rbac
+from koromon.utils.resp import is_setup
 
 
 def create_app(name=None, config=None):
@@ -26,10 +32,23 @@ def create_app(name=None, config=None):
     setup_rbac(app)
     setup_error_pages(app)
 
+    app.register_blueprint(admin_bp)
     app.register_blueprint(account_bp)
     app.register_blueprint(article_bp)
+    app.register_blueprint(pages_bp)
 
     return app
+
+
+@article_bp.before_request
+@account_bp.before_request
+@admin_bp.before_request
+@pages_bp.before_request
+def redirect_setup():
+    if request.path.startswith("/static"):
+        return
+    if not is_setup() and request.path != "/setup":
+        return redirect(url_for('pages.setup'))
 
 
 def setup_error_pages(app):

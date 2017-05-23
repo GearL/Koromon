@@ -18,7 +18,7 @@ class Base(db.Model):
     @classmethod
     def paginate(cls, page, per_page=20, error_out=True, order_by=None,
                  filters=[], with_deleted=False):
-        """"A proxy method to return `per_page` items from page `page`.
+        """A proxy method to return `per_page` items from page `page`.
         If there is `state` attribute in class and `with_deleted` is `False`
         it will filter out which was `state != 'deleted'`.
         If items were not found it will abort with 404.
@@ -59,7 +59,7 @@ class Base(db.Model):
         db.session.add(self)
         if commit:
             try:
-                db.sessionn.commit()
+                db.session.commit()
             except IntegrityError:
                 db.session.rollback()
 
@@ -85,8 +85,8 @@ class Base(db.Model):
         """Delete object from database.
         :param commit: Commit to database immediately
         """
-        if hasattr(self, 'state'):
-            self.state = 'deleted'
+        if hasattr(self, 'deleted'):
+            self.deleted = True
         else:
             db.session.delete(self)
 
@@ -96,7 +96,7 @@ class Base(db.Model):
 
 class UserQuery(BaseQuery):
     def authenticate(self, login_name, raw_password):
-        user = self.filter(User.loginname == login_name).first()
+        user = self.filter(User.login_name == login_name).first()
         if user and user.check_password(raw_password):
             return user
         return None
@@ -187,10 +187,10 @@ class User(Base, UserMixin):
         db.Model.__init__(self, **kwargs)
 
     def __unicode__(self):
-        return self.loginname
+        return self.login_name
 
     def __repr__(self):
-        return '<User: %s>' % self.loginname
+        return '<User: %s>' % self.login_name
 
     def change_password(self, raw_passwd):
         self.salt = uuid4().hex
@@ -224,7 +224,7 @@ class User(Base, UserMixin):
     def jsonify(self):
         return {
             'id': self.id,
-            'loginname': self.loginname,
+            'login_name': self.login_name,
             'nickname': self.nickname,
             'email': self.email,
             'qq': self.qq,
@@ -255,7 +255,7 @@ class User(Base, UserMixin):
 
     @classmethod
     def check_login_name(cls, login_name):
-        if cls.query.filter_by(loginname=login_name).first():
+        if cls.query.filter_by(login_name=login_name).first():
             return fail(message=u'用户已存在')
         return success(message=u'用户名可用')
 
