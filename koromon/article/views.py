@@ -3,7 +3,7 @@ from flask import Blueprint, jsonify
 from flask import abort
 
 from koromon.article.models import Article, Category
-from koromon.exts import rbac
+from koromon.exts.rbac import rbac
 from koromon.utils.resp import success, fail
 
 bp = Blueprint('article', __name__, url_prefix='/categories')

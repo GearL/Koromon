@@ -3,7 +3,7 @@ from datetime import datetime
 from sqlalchemy.exc import IntegrityError
 
 from koromon.account.models import Base
-from koromon.exts import db
+from koromon.exts.database import db
 
 
 class Category(Base):

@@ -2,7 +2,7 @@ from flask_script import Manager
 from setuptools import find_packages
 
 from koromon.app import create_app
-from koromon.exts import db
+from koromon.exts.database import db
 
 application = create_app('koromon')
 manager = Manager(application)

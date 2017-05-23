@@ -8,7 +8,7 @@ from flask_rbac import RoleMixin, UserMixin
 from flask_sqlalchemy import BaseQuery
 from sqlalchemy.exc import IntegrityError
 
-from koromon.exts import db
+from koromon.exts.database import db
 from koromon.utils.resp import fail, success
 
 
