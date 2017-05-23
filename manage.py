@@ -9,9 +9,9 @@ manager = Manager(application)
 
 
 def _import_models():
-    koromon_packages = find_packages('./Koromon')
+    koromon_packages = find_packages('./koromon')
     for each in koromon_packages:
-        guess_module_name = 'Koromon.%s.models' % each
+        guess_module_name = 'koromon.%s.models' % each
         try:
             __import__(guess_module_name, globals(), locals())
             print 'Find model:', guess_module_name

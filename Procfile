@@ -1,1 +1,1 @@
-web: python manage.py runserver --port $WIKI_PORT
+web: python manage.py runserver --port $KOROMON_PORT

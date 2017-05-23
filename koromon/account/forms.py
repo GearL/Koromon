@@ -87,7 +87,7 @@ class ChangePasswordForm(FlaskForm):
         validators=[
             validators.DataRequired(),
             validators.length(min=6, max=16),
-            validators.equal_to('newpasswd', message="新密码与确认密码不匹配")
+            validators.equal_to('newpasswd', message=U"新密码与确认密码不匹配")
         ]
     )
 
@@ -112,7 +112,7 @@ class ReSetPasswordForm(FlaskForm):
         validators=[
             validators.DataRequired(),
             validators.length(min=6, max=16),
-            validators.equal_to('newpasswd', message="新密码与确认密码不匹配")
+            validators.equal_to('newpasswd', message=U"新密码与确认密码不匹配")
         ]
     )
 

@@ -7,8 +7,8 @@ login_manager = LoginManager()
 
 
 @login_manager.user_loader
-def load_user(userid):
-    return User.query.get(userid)
+def load_user(user_id):
+    return User.query.get(user_id)
 
 
 def setup_login_manager(app):

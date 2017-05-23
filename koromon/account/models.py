@@ -6,12 +6,15 @@ from uuid import uuid4
 
 from flask_rbac import RoleMixin, UserMixin
 from flask_sqlalchemy import BaseQuery
+from sqlalchemy.exc import IntegrityError
 
 from koromon.exts import db
-from koromon.utils.json import fail, success
+from koromon.utils import fail, success
 
 
-class ModelMixin(object):
+class Base(db.Model):
+    __abstract__ = True
+
     @classmethod
     def paginate(cls, page, per_page=20, error_out=True, order_by=None,
                  filters=[], with_deleted=False):
@@ -25,7 +28,7 @@ class ModelMixin(object):
                 name = BaseModel.Column(BaseModel.String(20))
             User.paginate(page=1, per_page=3)
         Returns an :class:`Pagination` object.
-        :param order_by: haha
+        :param order_by: sort by this param
         :param page: Page to show.
         :param per_page: Sepcify how many items in a page.
         :param error_out: If `False`, disable abort with 404.
@@ -40,7 +43,7 @@ class ModelMixin(object):
         for filte in filters:
             query = query.filter(filte)
 
-        if not order_by is None:
+        if order_by is not None:
             query = query.order_by(order_by)
 
         pagination = query.paginate(
@@ -55,9 +58,12 @@ class ModelMixin(object):
         """Proxy method of saving object to database"""
         db.session.add(self)
         if commit:
-            db.session.commit()
+            try:
+                db.sessionn.commit()
+            except IntegrityError:
+                db.session.rollback()
 
-    def edit(self, form_data, commit=True):
+    def update(self, form_data, commit=True):
         """Edit object from `form_data`.
         :param form_data: Data to save in object.
         :param commit: If `commit` is `True`
@@ -70,7 +76,10 @@ class ModelMixin(object):
         db.session.add(self)
 
         if commit:
-            db.session.commit()
+            try:
+                db.sessionn.commit()
+            except IntegrityError:
+                db.session.rollback()
 
     def delete(self, commit=True):
         """Delete object from database.
@@ -106,7 +115,7 @@ users_roles = db.Table(
 )
 
 
-class Role(ModelMixin, RoleMixin, db.Model):
+class Role(Base, RoleMixin):
     __tablename__ = 'role'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -139,7 +148,7 @@ class Role(ModelMixin, RoleMixin, db.Model):
         return Role.query.filter_by(name=name).first()
 
 
-class User(ModelMixin, UserMixin, db.Model):
+class User(Base, UserMixin):
     """Model of user."""
 
     __tablename__ = 'user'
@@ -156,7 +165,7 @@ class User(ModelMixin, UserMixin, db.Model):
     phone = db.Column(db.String(11), nullable=True)
     qq = db.Column(db.String(15), nullable=True)
     avatar = db.Column(db.String(250))
-    create_date = db.Column(db.DateTime, default=datetime.now())
+    created = db.Column(db.DateTime, default=datetime.utcnow)
     salt = db.Column(db.String(32), nullable=False)
     state = db.Column(db.Enum(*USER_STATE_VALUES), default='normal')
 
@@ -192,7 +201,7 @@ class User(ModelMixin, UserMixin, db.Model):
         return self.hashed_password == _hashed_password
 
     def has_email(self):
-        return not self.email is None
+        return self.email is not None
 
     def check_email(self, email):
         return self.email == email
@@ -236,8 +245,8 @@ class User(ModelMixin, UserMixin, db.Model):
 
         if not self.email:
             self.email = 'None'
-        URL_PATTERN = "http://www.gravatar.com/avatar/%s?%s"
-        gravatar_url = URL_PATTERN % (md5(self.email.lower()).hexdigest(),
+        url_pattern = "http://www.gravatar.com/avatar/%s?%s"
+        gravatar_url = url_pattern % (md5(self.email.lower()).hexdigest(),
                                       urllib.urlencode({'s': str(size)}))
         return gravatar_url
 
