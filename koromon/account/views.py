@@ -18,8 +18,8 @@ def sign_up():
     pass
 
 
-@bp.route("/logout", methods=['GET'])
-@rbac.allow(['anonymous'], ['GET', 'POST'])
+@bp.route("/logout", methods=['POST'])
+@rbac.allow(['anonymous'], ['POST'])
 @login_required
 def logout():
     logout_user()
