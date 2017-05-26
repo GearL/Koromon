@@ -31,7 +31,7 @@ def create_app(name=None, config=None):
     setup_login_manager(app)
     setup_rbac(app)
     setup_error_pages(app)
-    setup_redirect_setup_page(app)
+    setup_redirect_page(app)
 
     app.register_blueprint(admin_bp)
     app.register_blueprint(account_bp)
@@ -41,11 +41,9 @@ def create_app(name=None, config=None):
     return app
 
 
-def setup_redirect_setup_page(app):
+def setup_redirect_page(app):
     @app.before_request
     def redirect_setup():
-        if request.path.startswith("/static"):
-            return
         if not is_setup() and request.path != "/setup":
             return redirect(url_for('pages.setup'))
 
