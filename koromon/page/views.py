@@ -14,7 +14,7 @@ views = Blueprint('pages', __name__)
 
 
 @views.route('/setup', methods=['GET', 'POST'])
-@rbac.allow(['anonymous'], methods=['GET'])
+@rbac.allow(['anonymous'], methods=['GET', 'POST'])
 def setup():
     if not is_setup():
         if request.method == 'POST':

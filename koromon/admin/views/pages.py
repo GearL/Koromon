@@ -11,8 +11,8 @@ from koromon.page.models import Pages
 from koromon.utils.resp import success
 
 
-@admin.route('/admin/pages', defaults={'route': None}, methods=['GET', 'POST'])
-@admin.route('/admin/pages/<route>', methods=['GET', 'POST'])
+@admin.route('/pages', defaults={'route': None}, methods=['GET', 'POST'])
+@admin.route('/pages/<route>', methods=['GET', 'POST'])
 @rbac.allow(['superuser'], methods=['GET', 'POST'])
 def admin_pages(route):
     if request.method == 'GET' and request.args.get('mode') == 'create':
@@ -46,7 +46,7 @@ def admin_pages(route):
     )
 
 
-@admin.route('/admin/page/<page_route>/delete', methods=['POST'])
+@admin.route('/page/<page_route>/delete', methods=['POST'])
 @rbac.allow(['superuser'], methods=['GET', 'POST'])
 def delete_page(page_route):
     page = Pages.get_by_route(page_route)
