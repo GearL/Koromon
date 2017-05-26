@@ -7,7 +7,7 @@ from flask import url_for
 from koromon.admin.models import Config
 from koromon.admin.views.main import bp as admin
 from koromon.exts.rbac import rbac
-from koromon.pages.models import Pages
+from koromon.page.models import Pages
 from koromon.utils.resp import success
 
 

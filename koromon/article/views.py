@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify
-from flask import abort
+from flask import Blueprint, jsonify, abort
 
 from koromon.article.models import Article, Category
 from koromon.exts.rbac import rbac

@@ -1,4 +1,4 @@
-from flask.ext.login import login_required
+from flask_login import login_required
 
 from koromon.admin.views.main import bp as admin_bp
 from koromon.exts.rbac import rbac

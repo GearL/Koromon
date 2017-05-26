@@ -3,16 +3,13 @@
 from __future__ import absolute_import
 
 from envcfg.raw import koromon
-from flask import Flask
-from flask import redirect
-from flask import render_template
-from flask import request
-from flask import url_for
+from flask import Flask, redirect
+from flask import render_template, request, url_for
 
 from koromon.admin.views.main import bp as admin_bp
 from koromon.account.views import bp as account_bp
 from koromon.article.views import bp as article_bp
-from koromon.pages.views import views as pages_bp
+from koromon.page.views import views as pages_bp
 from koromon.exts.database import db
 from koromon.exts.login_manager import setup_login_manager
 from koromon.exts.rbac import setup_rbac

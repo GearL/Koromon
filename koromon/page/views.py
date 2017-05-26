@@ -6,7 +6,7 @@ from jinja2 import TemplateNotFound
 
 from koromon.account.models import User, Role
 from koromon.exts.rbac import rbac
-from koromon.pages.models import Pages
+from koromon.page.models import Pages
 from koromon.admin.models import Config
 from koromon.utils.resp import is_setup
 

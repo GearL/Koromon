@@ -1,6 +1,4 @@
-from flask import Blueprint
-from flask import redirect
-from flask import url_for
+from flask import Blueprint, redirect, url_for
 from flask_login import login_required, logout_user
 
 from koromon.exts.rbac import rbac
