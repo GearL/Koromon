@@ -2,7 +2,7 @@ import hashlib
 
 from flask import jsonify
 
-from koromon.pages.models import Config
+from koromon.admin.models import Config
 
 
 def success(message='', result={}):
@@ -30,7 +30,7 @@ def sha512(string):
 
 
 def is_setup():
-    setup = Config.query.filter_by(key='setup').first()
+    setup = Config.get_by_key('setup')
     if setup:
         return setup.value
     else:
