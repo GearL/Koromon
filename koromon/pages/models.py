@@ -29,4 +29,3 @@ class Pages(db.Model):
     def __init__(self, route, html):
         self.route = route
         self.html = html
-

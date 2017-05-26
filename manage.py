@@ -1,6 +1,7 @@
 from flask_script import Manager
 from setuptools import find_packages
 
+from koromon.account.models import Role
 from koromon.app import create_app
 from koromon.exts.database import db
 
@@ -25,6 +26,11 @@ def syncdb():
         _import_models()
         db.create_all()
         db.session.commit()
+
+        super_user = Role('superuser')
+        super_user.save()
+        manager = Role('manager')
+        manager.save()
     print 'Database Created'
 
 

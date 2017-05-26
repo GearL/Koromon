@@ -26,11 +26,15 @@ def setup():
             print login_name
             nickname = request.form['nickname']
             password = request.form['password']
-            admin = User(login_name=login_name, nickname=nickname, passwd=password)
+            admin = User(
+                login_name=login_name,
+                nickname=nickname,
+                passwd=password
+            )
             super_user = Role.get_by_name('superuser')
             admin.roles.append(super_user)
             admin.save()
-            Config('setup',True).save()
+            Config('setup', True).save()
             return redirect(url_for('pages.static_html'))
         return render_template('setup.html')
     return redirect(url_for('pages.static_html'))
