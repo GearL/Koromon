@@ -150,8 +150,9 @@ class User(UserMixin, Base):
             'email': self.email,
             'qq': self.qq,
             'phone': self.phone,
-            'create_date': self.create_date,
-            'state': self.state
+            'create_date': self.created,
+            'state': self.state,
+            'avatar': self.get_avatar()
         }
 
     def is_authenticated(self):

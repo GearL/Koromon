@@ -114,8 +114,25 @@ def logout():
     )
 
 
-@bp.route("/detail", methods=['GET', 'POST'])
-@rbac.allow(['superuser', 'manager'], methods=['GET', 'POST'])
+@bp.route('/profile', methods=['GET'])
+@rbac.allow(['superuser', 'manager'], methods=['GET'])
 @login_required
 def profile():
-    return jsonify(current_user.jsonify())
+    user = User.get_by_login_name(current_user.login_name)
+    return success(
+        result={
+            'profile': user.jsonify()
+        }
+    )
+
+
+@bp.route('/profile', methods=['POST'])
+@rbac.allow(['superuser', 'manager'], methods=['POST'])
+@login_required
+def update_profile():
+    user = User.get_by_login_name(current_user.login_name)
+    user.update(request.form)
+    return success(result=request.form)
+
+
+
