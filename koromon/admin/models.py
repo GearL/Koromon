@@ -13,4 +13,4 @@ class Config(Base):
 
     @classmethod
     def get_by_key(cls, key):
-        return Config.query.filter_by(key=key).first()
+        return cls.query.filter_by(key=key).first()
