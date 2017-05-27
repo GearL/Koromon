@@ -61,9 +61,9 @@ def update_pages(route):
         )
 
 
-@admin.route('/page/<page_route>/delete', methods=['POST'])
-@rbac.allow(['superuser'], methods=['GET', 'POST'])
-def delete_page(page_route):
-    page = Pages.get_by_route(page_route)
+@admin.route('/page/<route>', methods=['DELETE'])
+@rbac.allow(['superuser'], methods=['DELETE'])
+def delete_page(route):
+    page = Pages.get_by_route(route)
     page.delete()
     return success(message=u'删除成功')
