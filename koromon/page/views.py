@@ -25,7 +25,7 @@ def setup():
             admin = User(
                 login_name=login_name,
                 nickname=nickname,
-                passwd=password
+                password=password
             )
             super_user = Role.get_by_name('superuser')
             admin.roles.append(super_user)

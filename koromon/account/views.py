@@ -5,8 +5,8 @@ from flask import request
 from flask_login import current_user, login_user
 from flask_login import login_required, logout_user
 
-from koromon.account.forms import SignInForm
-from koromon.account.models import User
+from koromon.account.forms import SignInForm, SignUpForm
+from koromon.account.models import User, Role
 from koromon.exts.rbac import rbac
 from koromon.utils.resp import fail, success
 
@@ -14,16 +14,17 @@ bp = Blueprint('account', __name__, url_prefix='/account')
 
 
 @bp.route('/signin', methods=['GET', 'POST'])
-@rbac.allow(['anonymous'], ['GET', 'POST'])
+@rbac.allow(['anonymous'], methods=['GET', 'POST'])
 def sign_in():
     if not current_user.is_anonymous():
         return redirect(url_for('admin.index'))
 
     form = SignInForm()
+    print 1
 
     if form.validate_on_submit():
-        login_name = request.form['loginname'].strip()
-        password = request.form['passwd'].strip()
+        login_name = request.form['login_name'].strip()
+        password = request.form['password'].strip()
         is_remember = False
         if 'remember' in request.form:
             is_remember = request.form['remember']
@@ -61,7 +62,44 @@ def sign_in():
 @bp.route('/signup', methods=['GET', 'POST'])
 @rbac.allow(['anonymous'], ['GET', 'POST'])
 def sign_up():
-    pass
+    if not current_user.is_anonymous():
+        return redirect(url_for('admin.index'))
+
+    form = SignUpForm()
+
+    if form.validate_on_submit():
+        login_name = request.form['login_name'].strip()
+        password = request.form['password'].strip()
+        nickname = request.form['nickname']
+
+        user = User.get_by_login_name(login_name)
+        if user is not None:
+            return User.check_login_name(login_name)
+
+        anonymous = Role.get_by_name('normal')
+
+        user = User(
+            login_name=login_name,
+            nickname=nickname,
+            password=password
+        )
+        user.roles.append(anonymous)
+        user.state = 'unactivated'
+        user.save()
+        return success(
+            result={
+                'redirect_url': url_for('admin.index')
+            }
+        )
+
+    if form.errors:
+        return fail(
+            result={
+                'errors': True,
+                'messages': form.errors
+            }
+        )
+    return render_template('admin/account/signup.html', form=form)
 
 
 @bp.route("/logout", methods=['POST'])

@@ -31,6 +31,8 @@ def syncdb():
         super_user.save()
         manager = Role('manager')
         manager.save()
+        normal = Role('normal')
+        normal.save()
     print 'Database Created'
 
 

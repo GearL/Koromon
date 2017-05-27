@@ -61,9 +61,9 @@ class Role(Base, RoleMixin):
         for parent in parents:
             self.add_parent(parent)
 
-    @staticmethod
-    def get_by_name(name):
-        return Role.query.filter_by(name=name).first()
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()
 
 
 class User(Base, UserMixin):
@@ -94,9 +94,9 @@ class User(Base, UserMixin):
             login_name = kwargs.pop('login_name')
             self.login_name = login_name.lower()
 
-        if 'passwd' in kwargs:
-            raw_passwd = kwargs.pop('passwd')
-            self.change_password(raw_passwd)
+        if 'password' in kwargs:
+            raw_password = kwargs.pop('password')
+            self.change_password(raw_password)
 
         if 'nickname' in kwargs:
             nickname = kwargs.pop('nickname')
@@ -110,12 +110,12 @@ class User(Base, UserMixin):
     def __repr__(self):
         return '<User: %s>' % self.login_name
 
-    def change_password(self, raw_passwd):
+    def change_password(self, raw_password):
         self.salt = uuid4().hex
-        self.hashed_password = self._hash_password(self.salt, raw_passwd)
+        self.hashed_password = self._hash_password(self.salt, raw_password)
 
-    def check_password(self, raw_passwd):
-        _hashed_password = self._hash_password(self.salt, raw_passwd)
+    def check_password(self, raw_password):
+        _hashed_password = self._hash_password(self.salt, raw_password)
         return self.hashed_password == _hashed_password
 
     def has_email(self):
@@ -123,6 +123,9 @@ class User(Base, UserMixin):
 
     def check_email(self, email):
         return self.email == email
+
+    def check_state(self):
+        return self.state
 
     def is_active(self):
         return self.state == 'normal'
