@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify
-from flask import abort
+from flask import Blueprint, jsonify, abort
 
 from koromon.article.models import Article, Category
 from koromon.exts.rbac import rbac
@@ -20,7 +19,7 @@ def article_list(category):
     abort(404)
 
 
-@bp.route('/<string:category>/<article_id>/', methods=['GET'])
+@bp.route('/<string:category>/<int:article_id>/', methods=['GET'])
 @rbac.allow(['anonymous'], methods=['GET'])
 def article(category, article_id):
     category = Category.get_category_by_url_string(category)

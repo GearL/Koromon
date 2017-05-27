@@ -7,10 +7,11 @@ from wtforms import validators
     那个错误返回信息可以自己定制
     validators.xx(xx, message='something')
     这样如果不符合要求的话就会返回message的内容
-    eg:passwd = PasswordField(
+    eg:
+    passwd = PasswordField(
         label=u'密码',
         validators=[
-            validators.length(min=6, max=16, message='长度要求在6～16个字符'）
+            validators.length(min=6, max=16, message=u'长度要求在6～16个字符'）
         ]
     )
     如果我们输入字符长度不在6～16区间内的，就会返回 长度要求在6～16个字

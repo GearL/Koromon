@@ -2,7 +2,7 @@ from datetime import datetime
 
 from sqlalchemy.exc import IntegrityError
 
-from koromon.account.models import Base
+from koromon.common.models import Base
 from koromon.exts.database import db
 
 
