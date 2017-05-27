@@ -33,7 +33,7 @@ users_roles = db.Table(
 )
 
 
-class Role(Base, RoleMixin):
+class Role(RoleMixin, Base):
     __tablename__ = 'role'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -66,7 +66,7 @@ class Role(Base, RoleMixin):
         return cls.query.filter_by(name=name).first()
 
 
-class User(Base, UserMixin):
+class User(UserMixin, Base):
     """Model of user."""
 
     __tablename__ = 'user'

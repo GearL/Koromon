@@ -23,7 +23,6 @@ def create_app(name=None, config=None):
 
     app.debug = bool(int(koromon.DEBUG))
     app.config['TESTING'] = bool(int(koromon.TESTING))
-    app.secret_key = koromon.SERCERT_KEY
 
     db.init_app(app)
     setup_login_manager(app)

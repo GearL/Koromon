@@ -1,7 +1,6 @@
 # coding=utf-8
-from flask import Blueprint, redirect, url_for
-from flask import render_template
-from flask import request
+from flask import Blueprint, redirect, url_for, jsonify
+from flask import render_template, request
 from flask_login import current_user, login_user
 from flask_login import login_required, logout_user
 
@@ -119,4 +118,4 @@ def logout():
 @rbac.allow(['superuser', 'manager'], methods=['GET', 'POST'])
 @login_required
 def profile():
-    pass
+    return jsonify(current_user.jsonify())
