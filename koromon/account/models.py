@@ -173,9 +173,13 @@ class User(Base, UserMixin):
 
     @classmethod
     def check_login_name(cls, login_name):
-        if cls.query.filter_by(login_name=login_name).first():
+        if cls.get_by_login_name(login_name):
             return fail(message=u'用户已存在')
         return success(message=u'用户名可用')
+
+    @classmethod
+    def get_by_login_name(cls, login_name):
+        return cls.query.filter_by(login_name=login_name).first()
 
     @staticmethod
     def _hash_password(salt, password):
