@@ -20,7 +20,6 @@ def sign_in():
         return redirect(url_for('admin.index'))
 
     form = SignInForm()
-    print 1
 
     if form.validate_on_submit():
         login_name = request.form['login_name'].strip()
@@ -106,8 +105,14 @@ def sign_up():
 @rbac.allow(['anonymous'], ['POST'])
 @login_required
 def logout():
+    if current_user.is_anonymous():
+        return fail(message=u'你没有登录')
     logout_user()
-    return redirect(url_for('account.sign_in'))
+    return success(
+        result={
+            'redirect_url': url_for('account.sign_in')
+        }
+    )
 
 
 @bp.route("/detail", methods=['GET', 'POST'])

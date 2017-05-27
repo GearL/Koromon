@@ -1,24 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends 'base.html' %}
+
+{% block content %}
 <form method="post" action="{{ url_for('account.sign_in') }}" class="layui-form" id="loginform">
-        {{ form.hidden_tag() }}
-        <div class="layui-user-icon larry-login">
-             <input type="text" placeholder="账号" class="login_txtbx" name="login_name"/>
-        </div>
-        <div class="layui-pwd-icon larry-login">
-             <input type="password" placeholder="密码" class="login_txtbx" name="password"/>
-        </div>
-        <div class="layui-input-block">
-            <input type="checkbox" name="remember" lay-skin="switch">
-        </div>
-        <div class="layui-submit larry-login">
-            <input type="submit" value="立即登陆" class="submit_btn"/>
-        </div>
-    </form>
-</body>
-</html>
+    {{ form.hidden_tag() }}
+    <div class="layui-user-icon larry-login">
+         <input type="text" placeholder="账号" class="login_txtbx" name="login_name"/>
+    </div>
+    <div class="layui-pwd-icon larry-login">
+         <input type="password" placeholder="密码" class="login_txtbx" name="password"/>
+    </div>
+    <div class="layui-input-block">
+        <input type="checkbox" name="remember" lay-skin="switch">
+    </div>
+    <div class="layui-submit larry-login">
+        <input type="submit" value="立即登陆" class="submit_btn"/>
+    </div>
+</form>
+{% endblock %}
