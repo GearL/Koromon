@@ -4,12 +4,6 @@ CMS based on Flask
 
 ## Quick Start
 
-### Run scripts
-`./setup.sh`
-
--------------
-### Or
-
 #### 1. Install pip, virtualenv
 `sudo apt-get install python-pip`
 
