@@ -29,6 +29,8 @@ def setup():
             )
             super_user = Role.get_by_name('superuser')
             admin.roles.append(super_user)
+            admin.role_id = super_user.id
+            admin.state = 'normal'
             admin.save()
             Config('setup', True).save()
             return redirect(url_for('pages.static_html'))
@@ -36,8 +38,8 @@ def setup():
     return redirect(url_for('pages.static_html'))
 
 
-@views.route("/", defaults={'template': 'index'})
-@views.route("/<template>")
+@views.route('/', defaults={'template': 'index'})
+@views.route('/<template>')
 @rbac.allow(['anonymous'], methods=['GET'])
 def static_html(template):
     try:

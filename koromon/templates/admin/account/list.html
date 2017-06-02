@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+{% for user in users %}
+{{ user.login_name }}
+{{ user.nickname }}
+{{ user.roles[0].name }}
+{{ user.state }}
+{% endfor %}
+{% endblock %}

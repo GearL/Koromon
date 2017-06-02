@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import Blueprint, redirect, url_for, jsonify
+from flask import Blueprint, redirect, url_for
 from flask import render_template, request
 from flask_login import current_user, login_user
 from flask_login import login_required, logout_user
@@ -12,11 +12,11 @@ from koromon.utils.resp import fail, success
 bp = Blueprint('account', __name__, url_prefix='/account')
 
 
-@bp.route('/signin', methods=['GET', 'POST'])
+@bp.route('/sign_in', methods=['GET', 'POST'])
 @rbac.allow(['anonymous'], methods=['GET', 'POST'])
 def sign_in():
     if not current_user.is_anonymous():
-        return redirect(url_for('admin.index'))
+        return redirect(url_for('admin_main.index'))
 
     form = SignInForm()
 
@@ -36,7 +36,7 @@ def sign_in():
             return success(
                 message=u'登录成功',
                 result={
-                    'redirect_url': url_for('admin.index')
+                    'redirect_url': url_for('admin_main.index')
                 }
             )
         else:
@@ -57,11 +57,11 @@ def sign_in():
     return render_template('admin/account/login.html', form=form)
 
 
-@bp.route('/signup', methods=['GET', 'POST'])
+@bp.route('/sign_up', methods=['GET', 'POST'])
 @rbac.allow(['anonymous'], ['GET', 'POST'])
 def sign_up():
     if not current_user.is_anonymous():
-        return redirect(url_for('admin.index'))
+        return redirect(url_for('admin_main.index'))
 
     form = SignUpForm()
 
@@ -74,19 +74,19 @@ def sign_up():
         if user is not None:
             return User.check_login_name(login_name)
 
-        anonymous = Role.get_by_name('normal')
-
+        normal = Role.get_by_name('normal')
         user = User(
             login_name=login_name,
             nickname=nickname,
             password=password
         )
-        user.roles.append(anonymous)
+        user.roles.append(normal)
+        user.role_id = normal.id
         user.state = 'unactivated'
         user.save()
         return success(
             result={
-                'redirect_url': url_for('admin.index')
+                'redirect_url': url_for('pages.static_html')
             }
         )
 
@@ -100,12 +100,10 @@ def sign_up():
     return render_template('admin/account/signup.html', form=form)
 
 
-@bp.route("/logout", methods=['POST'])
+@bp.route('/sign_out', methods=['POST'])
 @rbac.allow(['anonymous'], ['POST'])
 @login_required
-def logout():
-    if current_user.is_anonymous():
-        return fail(message=u'你没有登录')
+def sign_out():
     logout_user()
     return success(
         result={
@@ -117,13 +115,9 @@ def logout():
 @bp.route('/profile', methods=['GET'])
 @rbac.allow(['superuser', 'manager'], methods=['GET'])
 @login_required
-def profile():
+def get_profile():
     user = User.get_by_login_name(current_user.login_name)
-    return success(
-        result={
-            'profile': user.jsonify()
-        }
-    )
+    return render_template('admin/account/profile.html', user=user)
 
 
 @bp.route('/profile', methods=['POST'])
@@ -133,6 +127,3 @@ def update_profile():
     user = User.get_by_login_name(current_user.login_name)
     user.update(request.form)
     return success(result=request.form)
-
-
-
