@@ -19,6 +19,13 @@ class Category(Base):
     def __repr__(self):
         return '<Category %s>' % self.name
 
+    def jsonify(self):
+        return {
+            'id': self.id,
+            'name': self.name,
+            'url': self.url_string
+        }
+
     def delete(self, commit=True):
         for article in self.articles:
             article.delete(False)
@@ -33,9 +40,25 @@ class Category(Base):
                 return False
 
     @classmethod
-    def get_category_by_url_string(cls, url_string):
+    def get_by_id(cls, id):
+        category = cls.query.filter_by(
+            id=id,
+            deleted=False
+        ).first()
+        return category
+
+    @classmethod
+    def get_by_url(cls, url_string):
         category = cls.query.filter_by(
             url_string=url_string,
+            deleted=False
+        ).first()
+        return category
+
+    @classmethod
+    def get_by_name(cls, name):
+        category = cls.query.filter_by(
+            url_string=name,
             deleted=False
         ).first()
         return category
@@ -58,15 +81,6 @@ class Article(Base):
 
     def __repr__(self):
         return '<Article %s>' % self.name
-
-    def delete(self, commit=True):
-        self.deleted = True
-        db.session.add(self)
-        if commit:
-            try:
-                db.session.commit()
-            except IntegrityError:
-                db.session.rollback()
 
     def jsonify(self):
         return {
