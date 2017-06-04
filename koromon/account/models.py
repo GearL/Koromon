@@ -148,13 +148,10 @@ class User(UserMixin, Base):
     def get_id(self):
         return self.id
 
-    def role(self):
-        return Role.get_by_id(self.role_id)
-
     def get_role(self):
-        if self.role().name == u'superuser':
+        if self.role.name == u'superuser':
             return u'超级管理员'
-        elif self.role().name == u'manager':
+        elif self.role.name == u'manager':
             return u'管理员'
 
     def jsonify(self):
@@ -168,7 +165,7 @@ class User(UserMixin, Base):
             'create_date': self.created,
             'state': self.state,
             'avatar': self.get_avatar(),
-            'role': self.role().name
+            'role': self.role.name
         }
 
     def is_authenticated(self):
@@ -194,6 +191,10 @@ class User(UserMixin, Base):
 
     def set_avatar(self, avatar_url):
         self.avatar = avatar_url
+
+    @property
+    def role(self):
+        return Role.get_by_id(self.role_id)
 
     @classmethod
     def check_login_name(cls, login_name):

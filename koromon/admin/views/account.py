@@ -13,11 +13,11 @@ bp = Blueprint('admin_account', __name__, url_prefix='/admin/account')
 @rbac.allow(['superuser'], methods=['GET'])
 @login_required
 def account_list():
-    page = int(request.args.get('page', 1))
+    page = request.args.get('page', default=1, type=int)
     limit = 10
     user_list = User.paginate(page=page, per_page=limit)
 
-    if page is not 1:
+    if page != 1:
         users = []
         for user in user_list.items:
             users.append(user.jsonify())

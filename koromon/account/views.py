@@ -120,10 +120,10 @@ def get_profile():
     return render_template('admin/account/profile.html', user=user)
 
 
-@bp.route('/profile', methods=['POST'])
-@rbac.allow(['superuser', 'manager'], methods=['POST'])
+@bp.route('/profile', methods=['PATCH'])
+@rbac.allow(['superuser', 'manager'], methods=['PATCH'])
 @login_required
 def update_profile():
     user = User.get_by_login_name(current_user.login_name)
     user.update(request.form)
-    return success(result=request.form)
+    return success(message=u'更新成功')
