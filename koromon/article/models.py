@@ -83,6 +83,10 @@ class Article(Base):
     def __repr__(self):
         return '<Article %s>' % self.name
 
+    def set_top(self):
+        self.top = True
+        self.save()
+
     def jsonify(self):
         return {
             'id': self.id,
@@ -106,5 +110,9 @@ class Article(Base):
 
     @classmethod
     def get_by_two_id(cls, category_id, article_id):
-        article = cls.query.filter_by(id=article_id, category_id=category_id, deleted=False).first()
+        article = cls.query.filter_by(
+            id=article_id,
+            category_id=category_id,
+            deleted=False
+        ).first()
         return article

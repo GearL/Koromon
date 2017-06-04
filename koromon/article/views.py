@@ -1,18 +1,17 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, abort
-from flask import render_template
+from flask import Blueprint, abort, render_template
 from flask import request
 
 from koromon.article.models import Article, Category
 from koromon.exts.rbac import rbac
-from koromon.utils.resp import success, fail
+from koromon.utils.resp import success
 
 bp = Blueprint('article', __name__, url_prefix='/categories')
 
 
 @bp.route('/<string:category>/articles/', methods=['GET'])
 @rbac.allow(['anonymous'], methods=['GET'])
-def article_list(category):
+def article_list_for_category(category):
     page = request.args.get('page', default=1, type=int)
     limit = 10
     category = Category.get_by_url(category)
@@ -66,8 +65,10 @@ def detail(category, article_id):
     category = Category.get_by_url(category)
     if category is not None:
         category_id = category.id
-        art = Article.get_by_two_id(article_id=article_id, category_id=category_id)
+        art = Article.get_by_two_id(
+            article_id=article_id,
+            category_id=category_id
+        )
         if art is not None:
             return render_template('article/detail.html', article=art)
     abort(404)
-
