@@ -26,7 +26,8 @@ def account_list():
         )
     return render_template(
         'admin/account/list.html',
-        users=user_list.items
+        users=user_list.items,
+        total=user_list.total
     )
 
 

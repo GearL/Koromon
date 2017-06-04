@@ -74,6 +74,7 @@ class Article(Base):
     created = db.Column(db.DateTime, default=datetime.utcnow)
     modified = db.Column(db.DateTime, default=datetime.utcnow)
     category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+    top = db.Column(db.BOOLEAN, default=True)
     deleted = db.Column(db.BOOLEAN, default=False)
 
     def __str__(self):
@@ -94,9 +95,16 @@ class Article(Base):
         }
 
     @classmethod
-    def get_article_json_by_category_id(cls, category_id):
+    def get_by_category_id(cls, category_id):
         articles = cls.query.filter_by(category_id=category_id, deleted=False)
-        article_json = {}
-        for art in articles:
-            article_json[art.name] = art.jsonify()
-        return article_json
+        return articles
+
+    @classmethod
+    def get_by_id(cls, id):
+        article = cls.query.filter_by(id=id, deleted=False).first()
+        return article
+
+    @classmethod
+    def get_by_two_id(cls, category_id, article_id):
+        article = cls.query.filter_by(id=article_id, category_id=category_id, deleted=False).first()
+        return article
