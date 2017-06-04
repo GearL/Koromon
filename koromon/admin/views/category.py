@@ -27,7 +27,8 @@ def category_list():
 
     return render_template(
         'admin/article/category_list.html',
-        categories=categories.items
+        categories=categories.items,
+        total=categories.total
     )
 
 
