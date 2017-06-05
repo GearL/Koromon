@@ -1,7 +1,5 @@
 # coding=utf-8
-from flask import Blueprint
-from flask import render_template
-from flask import request
+from flask import Blueprint, render_template, request
 from flask.ext.login import login_required
 
 from koromon.article.models import Category
