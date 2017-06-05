@@ -68,7 +68,7 @@ class Base(db.Model):
 
         if commit:
             try:
-                db.sessionn.commit()
+                db.session.commit()
             except IntegrityError:
                 db.session.rollback()
 

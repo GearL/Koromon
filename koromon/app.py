@@ -6,7 +6,7 @@ from envcfg.raw import koromon
 from flask import Flask, redirect
 from flask import render_template, request, url_for
 
-from koromon.admin.views.main import bp as admin_bp
+from koromon.admin.views.main import setup_admin_blueprint
 from koromon.account.views import bp as account_bp
 from koromon.article.views import bp as article_bp
 from koromon.page.views import views as pages_bp
@@ -28,12 +28,12 @@ def create_app(name=None, config=None):
     setup_login_manager(app)
     setup_rbac(app)
     setup_error_pages(app)
-    setup_redirect_page(app)
 
-    app.register_blueprint(admin_bp)
+    setup_admin_blueprint(app)
     app.register_blueprint(account_bp)
     app.register_blueprint(article_bp)
     app.register_blueprint(pages_bp)
+    setup_redirect_page(app)
 
     return app
 
@@ -41,7 +41,7 @@ def create_app(name=None, config=None):
 def setup_redirect_page(app):
     @app.before_request
     def redirect_setup():
-        if not is_setup() and request.path != "/setup":
+        if not is_setup() and request.path != '/setup':
             return redirect(url_for('pages.setup'))
 
 

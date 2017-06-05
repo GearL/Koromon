@@ -33,7 +33,7 @@ users_roles = db.Table(
 )
 
 
-class Role(Base, RoleMixin):
+class Role(RoleMixin, Base):
     __tablename__ = 'role'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -61,12 +61,22 @@ class Role(Base, RoleMixin):
         for parent in parents:
             self.add_parent(parent)
 
-    @staticmethod
-    def get_by_name(name):
-        return Role.query.filter_by(name=name).first()
+    def get_users(self):
+        users = []
+        for user in self.users:
+            users.append(user.jsonify())
+        return users
+
+    @classmethod
+    def get_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()
+
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
 
 
-class User(Base, UserMixin):
+class User(UserMixin, Base):
     """Model of user."""
 
     __tablename__ = 'user'
@@ -76,7 +86,7 @@ class User(Base, UserMixin):
                         'Deleted', 'Unactivated')
 
     id = db.Column(db.Integer, primary_key=True)
-    login_name = db.Column(db.String(30), nullable=False)
+    login_name = db.Column(db.String(30), unique=True, nullable=False)
     hashed_password = db.Column(db.String(64))
     nickname = db.Column(db.String(16), unique=True)
     email = db.Column(db.String(50), nullable=True)
@@ -85,7 +95,9 @@ class User(Base, UserMixin):
     avatar = db.Column(db.String(250))
     created = db.Column(db.DateTime, default=datetime.utcnow)
     salt = db.Column(db.String(32), nullable=False)
-    state = db.Column(db.Enum(*USER_STATE_VALUES), default='normal')
+    role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+
+    state = db.Column(db.Enum(*USER_STATE_VALUES), default='unactivated')
 
     def __init__(self, **kwargs):
         self.salt = uuid4().hex
@@ -94,9 +106,9 @@ class User(Base, UserMixin):
             login_name = kwargs.pop('login_name')
             self.login_name = login_name.lower()
 
-        if 'passwd' in kwargs:
-            raw_passwd = kwargs.pop('passwd')
-            self.change_password(raw_passwd)
+        if 'password' in kwargs:
+            raw_password = kwargs.pop('password')
+            self.change_password(raw_password)
 
         if 'nickname' in kwargs:
             nickname = kwargs.pop('nickname')
@@ -110,12 +122,12 @@ class User(Base, UserMixin):
     def __repr__(self):
         return '<User: %s>' % self.login_name
 
-    def change_password(self, raw_passwd):
+    def change_password(self, raw_password):
         self.salt = uuid4().hex
-        self.hashed_password = self._hash_password(self.salt, raw_passwd)
+        self.hashed_password = self._hash_password(self.salt, raw_password)
 
-    def check_password(self, raw_passwd):
-        _hashed_password = self._hash_password(self.salt, raw_passwd)
+    def check_password(self, raw_password):
+        _hashed_password = self._hash_password(self.salt, raw_password)
         return self.hashed_password == _hashed_password
 
     def has_email(self):
@@ -123,6 +135,9 @@ class User(Base, UserMixin):
 
     def check_email(self, email):
         return self.email == email
+
+    def check_state(self):
+        return self.state
 
     def is_active(self):
         return self.state == 'normal'
@@ -134,9 +149,9 @@ class User(Base, UserMixin):
         return self.id
 
     def get_role(self):
-        if self.roles[0].name == u'superuser':
+        if self.role.name == u'superuser':
             return u'超级管理员'
-        elif self.roles[0].name == u'manager':
+        elif self.role.name == u'manager':
             return u'管理员'
 
     def jsonify(self):
@@ -147,8 +162,10 @@ class User(Base, UserMixin):
             'email': self.email,
             'qq': self.qq,
             'phone': self.phone,
-            'create_date': self.create_date,
-            'state': self.state
+            'create_date': self.created,
+            'state': self.state,
+            'avatar': self.get_avatar(),
+            'role': self.role.name
         }
 
     def is_authenticated(self):
@@ -156,6 +173,10 @@ class User(Base, UserMixin):
 
     def active(self):
         self.state = 'normal'
+
+    def set_state(self, state):
+        if state in self.USER_STATE_VALUES:
+            self.state = state
 
     def get_avatar(self, size=70):
         if self.avatar:
@@ -171,11 +192,23 @@ class User(Base, UserMixin):
     def set_avatar(self, avatar_url):
         self.avatar = avatar_url
 
+    @property
+    def role(self):
+        return Role.get_by_id(self.role_id)
+
     @classmethod
     def check_login_name(cls, login_name):
-        if cls.query.filter_by(login_name=login_name).first():
+        if cls.get_by_login_name(login_name):
             return fail(message=u'用户已存在')
         return success(message=u'用户名可用')
+
+    @classmethod
+    def get_by_login_name(cls, login_name):
+        return cls.query.filter_by(login_name=login_name).first()
+
+    @classmethod
+    def get_by_id(cls, id):
+        return cls.query.filter_by(id=id).first()
 
     @staticmethod
     def _hash_password(salt, password):

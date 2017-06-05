@@ -1,33 +1,33 @@
 # coding=utf-8
-from flask import render_template
-from flask import request
+from flask import Blueprint, render_template, request
 from flask import url_for
 
 from koromon.admin.models import Config
-from koromon.admin.views.main import bp as admin
 from koromon.exts.rbac import rbac
 from koromon.page.models import Pages
 from koromon.utils.resp import success, fail
 
+bp = Blueprint('admin_page', __name__, url_prefix='/admin/page')
 
-@admin.route('/pages', defaults={'route': None}, methods=['GET'])
-@admin.route('/pages/<route>', methods=['GET'])
+
+@bp.route('/', defaults={'route': None}, methods=['GET'])
+@bp.route('/<route>', methods=['GET'])
 @rbac.allow(['superuser'], methods=['GET'])
 def get_pages(route):
     if request.args.get('mode') == 'create':
-        return render_template('admin/editor.html')
+        return render_template('bp/editor.html')
     if route:
         page = Pages.get_by_route(route)
-        return render_template('admin/editor.html', page=page)
+        return render_template('bp/editor.html', page=page)
     pages = Pages.query.all()
     return render_template(
-        'admin/pages.html',
+        'bp/pages.html',
         routes=pages,
         css=Config.get_config('css')
     )
 
 
-@admin.route('/pages/<route>', methods=['POST'])
+@bp.route('/<route>', methods=['POST'])
 @rbac.allow(['superuser'], methods=['POST'])
 def update_pages(route):
     if route:
@@ -49,19 +49,19 @@ def update_pages(route):
             page.save()
             return success(
                 result={
-                    'redirect_url': url_for('admin.get_pages')
+                    'redirect_url': url_for('bp.get_pages')
                 }
             )
         page = Pages(route, html)
         page.save()
         return success(
             result={
-                'redirect_url': url_for('admin.get_pages')
+                'redirect_url': url_for('bp.get_pages')
             }
         )
 
 
-@admin.route('/page/<route>', methods=['DELETE'])
+@bp.route('/<route>', methods=['DELETE'])
 @rbac.allow(['superuser'], methods=['DELETE'])
 def delete_page(route):
     page = Pages.get_by_route(route)
