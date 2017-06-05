@@ -5,6 +5,7 @@ from koromon.exts.rbac import rbac
 from .account import bp as account_bp
 from .article import bp as article_bp
 from .category import bp as category_bp
+from .menu import bp as menu_bp
 from .pages import bp as page_bp
 
 bp = Blueprint('admin_main', __name__, url_prefix='/admin')
@@ -23,4 +24,5 @@ def setup_admin_blueprint(app):
     app.register_blueprint(account_bp)
     app.register_blueprint(article_bp)
     app.register_blueprint(category_bp)
+    app.register_blueprint(menu_bp)
     app.register_blueprint(page_bp)
