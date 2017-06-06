@@ -44,7 +44,7 @@ class Category(Base):
         category = cls.query.filter_by(
             id=id,
             deleted=False
-        ).first()
+        )
         return category
 
     @classmethod
@@ -52,7 +52,7 @@ class Category(Base):
         category = cls.query.filter_by(
             url_string=url_string,
             deleted=False
-        ).first()
+        ).first_or_404()
         return category
 
     @classmethod
@@ -60,7 +60,7 @@ class Category(Base):
         category = cls.query.filter_by(
             url_string=name,
             deleted=False
-        ).first()
+        ).first_or_404()
         return category
 
 
@@ -105,7 +105,7 @@ class Article(Base):
 
     @classmethod
     def get_by_id(cls, id):
-        article = cls.query.filter_by(id=id, deleted=False).first()
+        article = cls.query.filter_by(id=id, deleted=False).first_or_404()
         return article
 
     @classmethod
@@ -114,5 +114,5 @@ class Article(Base):
             id=article_id,
             category_id=category_id,
             deleted=False
-        ).first()
+        ).first_or_404()
         return article
