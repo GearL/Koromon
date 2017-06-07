@@ -1,10 +1,6 @@
 # -*- coding: utf-8 -*-
-from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField
-from wtforms import validators
-
-'''
-    那个错误返回信息可以自己定制
+"""
+    错误返回信息可以自己定制
     validators.xx(xx, message='something')
     这样如果不符合要求的话就会返回message的内容
     eg:
@@ -16,7 +12,10 @@ from wtforms import validators
     )
     如果我们输入字符长度不在6～16区间内的，就会返回 长度要求在6～16个字
     返回内容会在 form.errors.password
-'''
+"""
+from flask_wtf import FlaskForm
+from wtforms import StringField, PasswordField, BooleanField
+from wtforms import validators
 
 
 class SignInForm(FlaskForm):
