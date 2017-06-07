@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {% for c in choice %}
-        {% print c %}
+    {% for cate in categories %}
+        {{ cate.name }}
+        {{ cate.url_string }}
     {% endfor %}
+    {{ total }}
 {% endblock %}
