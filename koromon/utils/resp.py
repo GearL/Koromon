@@ -1,6 +1,7 @@
 from flask import jsonify
 
 from koromon.admin.models import Config
+from koromon.article.models import Category
 
 
 def success(message='', result={}):
@@ -29,3 +30,11 @@ def is_setup():
         return setup.value
     else:
         return False
+
+
+def get_choice():
+    choices = {}
+    categories = Category.get_all()
+    for category in categories:
+        choices[category.id] = category.name
+    return choices

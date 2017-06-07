@@ -18,7 +18,7 @@ def category_list():
     page = request.args.get('page', default=1, type=int)
     limit = 10
     categories = Category.paginate(page=page, per_page=limit)
-
+    print categories.items
     if page != 1:
         lists = []
         for category in categories.items:

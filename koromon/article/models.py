@@ -63,12 +63,17 @@ class Category(Base):
         ).first_or_404()
         return category
 
+    @classmethod
+    def get_all(cls):
+        categories = cls.query.all()
+        return categories
+
 
 class Article(Base):
     __tablename__ = 'article'
 
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
+    name = db.Column(db.String(32))
     description = db.Column(db.String(144))
     content = db.Column(db.Text)
     created = db.Column(db.DateTime, default=datetime.utcnow)

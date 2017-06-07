@@ -1,12 +1,11 @@
 # coding=utf-8
-from flask import Blueprint
-from flask import render_template
-from flask import request
+from flask import Blueprint, render_template, request
 from flask_login import login_required
 
+from koromon.article.forms import ArticleForm
 from koromon.article.models import Article
 from koromon.exts.rbac import rbac
-from koromon.utils.resp import success, fail
+from koromon.utils.resp import success, fail, get_choice
 
 bp = Blueprint('admin_article', __name__, url_prefix='/admin/article')
 
@@ -38,32 +37,30 @@ def article_list():
 @rbac.allow(['superuser', 'manager'], methods=['GET'])
 @login_required
 def editor():
-    return render_template('admin/article/editor.html')
+    form = ArticleForm()
+    category_choice = get_choice()  # 选择文章分类
+    return render_template(
+        'admin/article/editor.html',
+        form=form,
+        choice=category_choice
+    )
 
 
 @bp.route('/', methods=['POST'])
 @rbac.allow(['superuser', 'manager'], methods=['POST'])
 @login_required
 def add():
-    name = request.form.get('name')
-    description = request.form.get('description')
-    content = request.form.get('content')
-    errors = {}
-    error = False
-    if name is None:
-        error = True
-        error['name_error'] = u'缺少文章名'
-    if description is None:
-        error = True
-        error['description_error'] = u'缺少文章简介'
-    if content is None:
-        error = True
-        error['content_error'] = u'缺少文章内容'
-    if error is True:
-        return fail(result=errors)
-    article = Article(name=name, description=description, content=content)
-    article.save()
-    return success(message=u'添加成功')
+    form = ArticleForm(request.form)
+    if form.validate():
+        article = Article(
+            name=form.name,
+            description=form.description,
+            content=form.content
+        )
+        article.save()
+        return success(message=u'添加成功')
+    if form.errors:
+        return fail(result=form.errors)
 
 
 @bp.route('/<int:id>', methods=['DELETE'])
@@ -80,7 +77,16 @@ def delete(id):
 @login_required
 def update(id):
     article = Article.get_by_id(id)
-    article.update(request.form)
+    form = ArticleForm(request.form)
+    if 'category' in request.form:
+        category_id = request.form.get(
+            'category',
+            default=article.category_id,
+            type=int
+        )
+        article.update({'category_id': category_id})
+    if form.validate():
+        article.update(form.data)
     return success(message=u'修改成功')
 
 
@@ -89,7 +95,14 @@ def update(id):
 @login_required
 def detail(id):
     article = Article.get_by_id(id)
-    return render_template('admin/article/editor.html', article=article)
+    form = ArticleForm()
+    category_choice = get_choice()
+    return render_template(
+        'admin/article/editor.html',
+        article=article,
+        form=form,
+        choice=category_choice
+    )
 
 
 @bp.route('/<int:id>', methods=['POST'])
