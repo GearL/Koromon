@@ -27,7 +27,7 @@ def sign_in():
         if 'remember' in request.form:
             is_remember = request.form['remember']
         user = User.query.authenticate(login_name, password)
-        if user:
+        if user is not None:
             if not user.is_active():
                 return fail(
                     message=u'用户已被暂停使用,请联系管理员'
@@ -49,10 +49,7 @@ def sign_in():
 
     if form.errors:
         return fail(
-            result={
-                'error': True,
-                'messages': form.errors
-            }
+            result=form.errors
         )
     return render_template('admin/account/login.html', form=form)
 

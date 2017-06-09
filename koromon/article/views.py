@@ -1,44 +1,68 @@
 # -*- coding: utf-8 -*-
-from flask import Blueprint, jsonify, abort
+from flask import Blueprint, render_template, request
 
 from koromon.article.models import Article, Category
 from koromon.exts.rbac import rbac
-from koromon.utils.resp import success, fail
+from koromon.utils.resp import success
 
 bp = Blueprint('article', __name__, url_prefix='/categories')
 
 
 @bp.route('/<string:category>/articles/', methods=['GET'])
 @rbac.allow(['anonymous'], methods=['GET'])
-def article_list(category):
-    category = Category.get_category_by_url_string(category)
-    if category is not None:
-        category_id = category.id
-        article_json = Article.get_article_json_by_category_id(category_id)
-        return jsonify(article_json)
-    abort(404)
+def article_list_for_category(category):
+    page = request.args.get('page', default=1, type=int)
+    limit = 10
+    category = Category.get_by_url(category)
+    category_id = category.id
+    filte = 'category_id=%d' % category_id
+    articles = Article.paginate(
+        page=page,
+        per_page=limit,
+        filters=[filte],
+        order_by='-top, -modified'
+    )
+    if page != 1:
+        article_json = []
+        for art in articles.items:
+            article_json.append(art.jsonify())
+        return success(result=article_json)
+    return render_template(
+        'artcile/list_by_category.html',
+        articles=articles.items,
+        total=articles.total
+    )
+
+
+@bp.route('/articles', methods=['GET'])
+@rbac.allow(['anonymous'], methods=['GET'])
+def article_list():
+    page = request.args.get('page', default=1, type=int)
+    limit = 10
+    articles = Article.paginate(
+        page=page,
+        per_page=limit,
+        order_by='-top, -modified'
+    )
+    if page != 1:
+        article_json = []
+        for art in articles.items:
+            article_json.append(art.jsonify())
+        return success(result=article_json)
+    return render_template(
+        'artcile/list_all.html',
+        articles=articles.items,
+        total=articles.total
+    )
 
 
 @bp.route('/<string:category>/<int:article_id>/', methods=['GET'])
 @rbac.allow(['anonymous'], methods=['GET'])
-def article(category, article_id):
-    category = Category.get_category_by_url_string(category)
-    if category is not None:
-        category_id = category.id
-        art = Article.query.filter_by(
-            category_id=category_id,
-            id=article_id
-        ).first()
-        return jsonify(art.jsonify())
-    abort(404)
-
-
-@bp.route('/<string:category>/delete/', methods=['GET'])
-@rbac.allow(['anonymous'], methods=['GET'])
-def delete(category):
-    category = Category.get_category_by_url_string(category)
-    flag = category.delete(commit=True)
-    if flag:
-        return success(message=u'删除成功')
-    else:
-        return fail(message=u'删除失败')
+def detail(category, article_id):
+    category = Category.get_by_url(category)
+    category_id = category.id
+    art = Article.get_by_two_id(
+        article_id=article_id,
+        category_id=category_id
+    )
+    return render_template('article/detail.html', article=art)

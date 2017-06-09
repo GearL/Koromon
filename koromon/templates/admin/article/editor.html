@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {{ choice }}
+    <form>
+    {{ form.hidden_tag() }}
+    {{ form.name.label }}{{ form.name(value=article.name) }}
+    {{ form.description.label }}{{ form.description(value=article.description) }}
+    {{ form.content.label }}{{ form.content(value=article.content) }}
+    {{ article.category_id }}
+    </form>
+
+{% endblock %}

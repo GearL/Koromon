@@ -29,10 +29,10 @@ def create_app(name=None, config=None):
     setup_rbac(app)
     setup_error_pages(app)
 
-    setup_admin_blueprint(app)
     app.register_blueprint(account_bp)
     app.register_blueprint(article_bp)
     app.register_blueprint(pages_bp)
+    setup_admin_blueprint(app)
     setup_redirect_page(app)
 
     return app

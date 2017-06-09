@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    {% for cate in categories %}
+        {{ cate.name }}
+        {{ cate.url_string }}
+    {% endfor %}
+    {{ total }}
+{% endblock %}
