@@ -33,7 +33,7 @@ def article_list():
     )
 
 
-@bp.route('/', methods=['GET'])
+@bp.route('/create', methods=['GET'])
 @rbac.allow(['superuser', 'manager'], methods=['GET'])
 @login_required
 def editor():
