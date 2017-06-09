@@ -11,6 +11,7 @@ from koromon.account.views import bp as account_bp
 from koromon.article.views import bp as article_bp
 from koromon.menu.views import bp as menu_bp
 from koromon.page.views import views as pages_bp
+from koromon.upload.views import bp as upload_bp
 from koromon.exts.database import db
 from koromon.exts.login_manager import setup_login_manager
 from koromon.exts.rbac import setup_rbac
@@ -21,6 +22,7 @@ def create_app(name=None, config=None):
     app = Flask(name or __name__)
 
     app.config.from_object('envcfg.raw.koromon')
+    app.config.from_object('koromon.settings')
 
     app.debug = bool(int(koromon.DEBUG))
     app.config['TESTING'] = bool(int(koromon.TESTING))
@@ -34,6 +36,7 @@ def create_app(name=None, config=None):
     app.register_blueprint(article_bp)
     app.register_blueprint(menu_bp)
     app.register_blueprint(pages_bp)
+    app.register_blueprint(upload_bp)
     setup_admin_blueprint(app)
     setup_redirect_page(app)
 
