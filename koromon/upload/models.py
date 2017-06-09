@@ -15,7 +15,7 @@ class UploadFile(Base):
         return '%s' % self.file_name
 
     def __repr__(self):
-        return '<Category %s>' % self.file_name
+        return '<UploadFile %s>' % self.file_name
 
     @classmethod
     def check_file_name(cls, file_name):
